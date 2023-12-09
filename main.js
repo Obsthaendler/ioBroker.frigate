@@ -11,6 +11,8 @@
 
 const utils = require('@iobroker/adapter-core');
 const { exit } = require('process');
+const MQTTClient = require('./lib/client');
+let client = null;
 let weburl;
 let m_id;
 
@@ -52,6 +54,7 @@ class Frigate extends utils.Adapter {
         this.log.info('MQTT Frigate URL: ' + weburl);
         this.subscribeForeignStates(m_id + '.*');
         this.subscribeStates('*');
+        client = new MQTTClient;
     }
 
     /**
@@ -59,6 +62,7 @@ class Frigate extends utils.Adapter {
      * @param {() => void} callback
      */
     onUnload(callback) {
+        if (client) client.destroy();
         try {
             callback();
         } catch (e) {

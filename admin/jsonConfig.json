@@ -16,6 +16,16 @@
             "type": "number",
             "label": "Number of web url",
             "newLine": true
+        },
+        "mqtturl": {
+            "type": "text",
+            "label": "MQTT Server Url",
+            "newLine": true
+        },
+        "mqttport": {
+            "type": "number",
+            "label": "MQTT Server Port",
+            "newLine": true
         }
     }
 }
