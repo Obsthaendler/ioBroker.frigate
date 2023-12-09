@@ -11,7 +11,7 @@
 
 const utils = require('@iobroker/adapter-core');
 const { exit } = require('process');
-const MQTTClient = require('./lib/client');
+const mqtt = require('mqtt');
 let client = null;
 let weburl;
 let m_id;
@@ -54,7 +54,17 @@ class Frigate extends utils.Adapter {
         this.log.info('MQTT Frigate URL: ' + weburl);
         this.subscribeForeignStates(m_id + '.*');
         this.subscribeStates('*');
-        client = new MQTTClient;
+        const clientId = 'frigate';
+        const _url = 'mqtt://' + this.config.mqtturl + (this.config.mqttport ? (':' + this.config.mqttport) : '') + '?clientId=' + clientId;
+        this.log.info('Try to connect to ' + _url);
+        client = mqtt.connect(_url, {
+            keepalive: 10, /* in seconds */
+            protocolId: 'MQTT',
+            protocolVersion: 4,
+            reconnectPeriod: 1000, /* in milliseconds */
+            connectTimeout: (30) * 1000, /* in milliseconds */
+        });
+        client.subscribe('frigate/#');
     }
 
     /**
